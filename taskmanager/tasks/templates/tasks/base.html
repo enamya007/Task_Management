@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{% block title %}TaskMaster{% endblock %}</title>
+
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Lato:wght@300;400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ═══════════════════════════════════════════════════════
+       PALETTE : Rouge · Vert · Café · Brun
+       ═══════════════════════════════════════════════════════ */
+    :root {
+      --rouge       : #C0392B;   /* rouge principal */
+      --rouge-clair : #E74C3C;   /* rouge vif accent */
+      --rouge-sombre: #922B21;   /* rouge foncé */
+
+      --vert        : #27AE60;   /* vert succès */
+      --vert-clair  : #2ECC71;
+      --vert-sombre : #1E8449;
+
+      --cafe        : #6F4E37;   /* café pur */
+      --cafe-clair  : #9B6A4A;
+      --cafe-sombre : #4A3525;
+
+      --brun        : #795548;   /* brun chaud */
+      --brun-clair  : #A1887F;
+      --brun-sombre : #4E342E;
+
+      --creme       : #FDF6EC;   /* fond crème */
+      --creme-fonce : #F0E6D3;
+      --texte       : #2C1810;   /* texte brun très foncé */
+      --texte-doux  : #6D4C41;
+      --blanc       : #FFFFFF;
+      --ombre       : rgba(111, 78, 55, 0.18);
+    }
+
+    /* ── Reset & Base ──────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background-color: var(--creme);
+      background-image:
+        radial-gradient(circle at 10% 20%, rgba(192,57,43,.06) 0%, transparent 50%),
+        radial-gradient(circle at 90% 80%, rgba(39,174,96,.06) 0%, transparent 50%);
+      color: var(--texte);
+      min-height: 100vh;
+    }
+
+    /* ── NAVBAR ────────────────────────────────────────────── */
+    .navbar {
+      background: linear-gradient(135deg, var(--cafe-sombre) 0%, var(--brun-sombre) 60%, var(--rouge-sombre) 100%);
+      padding: 0 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 68px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.35);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .navbar-brand {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+      text-decoration: none;
+    }
+
+    .navbar-logo {
+      width: 42px; height: 42px;
+      background: var(--rouge-clair);
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.4rem;
+      box-shadow: 0 0 0 3px rgba(255,255,255,.2);
+    }
+
+    .navbar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.55rem;
+      color: var(--creme);
+      letter-spacing: .03em;
+    }
+
+    .navbar-title span { color: var(--vert-clair); }
+
+    .navbar-links { display: flex; gap: .8rem; align-items: center; }
+
+    .nav-btn {
+      padding: .5rem 1.2rem;
+      border-radius: 6px;
+      font-family: 'Lato', sans-serif;
+      font-weight: 700;
+      font-size: .85rem;
+      letter-spacing: .05em;
+      text-transform: uppercase;
+      text-decoration: none;
+      transition: all .2s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .nav-btn-primary {
+      background: var(--vert);
+      color: var(--blanc);
+    }
+    .nav-btn-primary:hover { background: var(--vert-clair); transform: translateY(-1px); }
+
+    .nav-btn-outline {
+      background: transparent;
+      color: var(--creme);
+      border: 1.5px solid rgba(255,255,255,.4);
+    }
+    .nav-btn-outline:hover { background: rgba(255,255,255,.1); }
+
+    /* ── MESSAGES FLASH ─────────────────────────────────────── */
+    .messages-container { padding: 1rem 2rem 0; }
+
+    .alert {
+      padding: .9rem 1.4rem;
+      border-radius: 8px;
+      margin-bottom: .6rem;
+      font-weight: 700;
+      font-size: .9rem;
+      display: flex;
+      align-items: center;
+      gap: .6rem;
+      animation: slideIn .3s ease;
+    }
+
+    @keyframes slideIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .alert-success { background: #d4edda; color: #155724; border-left: 4px solid var(--vert); }
+    .alert-warning { background: #fff3cd; color: #856404; border-left: 4px solid #ffc107; }
+    .alert-info    { background: #d1ecf1; color: #0c5460; border-left: 4px solid #17a2b8; }
+    .alert-error   { background: #f8d7da; color: #721c24; border-left: 4px solid var(--rouge); }
+
+    /* ── MAIN CONTENT ───────────────────────────────────────── */
+    .main-content { max-width: 1200px; margin: 0 auto; padding: 2rem; }
+
+    /* ── PAGE HEADER ────────────────────────────────────────── */
+    .page-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 2rem;
+      padding-bottom: 1rem;
+      border-bottom: 3px solid var(--creme-fonce);
+    }
+
+    .page-header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.2rem;
+      color: var(--cafe-sombre);
+    }
+
+    .page-header h1 .accent { color: var(--rouge); }
+
+    /* ── STAT CARDS ─────────────────────────────────────────── */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--blanc);
+      border-radius: 12px;
+      padding: 1.2rem 1.4rem;
+      box-shadow: 0 2px 12px var(--ombre);
+      border-top: 4px solid transparent;
+      transition: transform .2s;
+    }
+    .stat-card:hover { transform: translateY(-3px); }
+    .stat-card.rouge { border-top-color: var(--rouge); }
+    .stat-card.vert  { border-top-color: var(--vert); }
+    .stat-card.cafe  { border-top-color: var(--cafe); }
+    .stat-card.brun  { border-top-color: var(--brun); }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 2.4rem;
+      font-weight: 900;
+      line-height: 1;
+    }
+    .rouge .stat-number { color: var(--rouge); }
+    .vert  .stat-number { color: var(--vert); }
+    .cafe  .stat-number { color: var(--cafe); }
+    .brun  .stat-number { color: var(--brun); }
+
+    .stat-label {
+      font-size: .8rem;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--texte-doux);
+      margin-top: .3rem;
+      font-weight: 700;
+    }
+
+    /* ── FILTRES ────────────────────────────────────────────── */
+    .filtres {
+      background: var(--blanc);
+      border-radius: 10px;
+      padding: 1rem 1.4rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      margin-bottom: 1.5rem;
+      box-shadow: 0 2px 8px var(--ombre);
+      flex-wrap: wrap;
+    }
+
+    .filtres label { font-weight: 700; font-size: .85rem; color: var(--cafe); }
+
+    .filtres select {
+      padding: .45rem .9rem;
+      border: 2px solid var(--creme-fonce);
+      border-radius: 6px;
+      font-family: 'Lato', sans-serif;
+      font-size: .9rem;
+      background: var(--creme);
+      color: var(--texte);
+      cursor: pointer;
+    }
+
+    .filtres select:focus { outline: none; border-color: var(--cafe); }
+
+    .btn-filtrer {
+      padding: .45rem 1.1rem;
+      background: var(--cafe);
+      color: var(--blanc);
+      border: none;
+      border-radius: 6px;
+      font-weight: 700;
+      font-size: .85rem;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .btn-filtrer:hover { background: var(--cafe-sombre); }
+
+    .btn-reset {
+      padding: .45rem .9rem;
+      background: transparent;
+      color: var(--texte-doux);
+      border: 2px solid var(--creme-fonce);
+      border-radius: 6px;
+      font-size: .85rem;
+      text-decoration: none;
+      font-weight: 700;
+    }
+    .btn-reset:hover { border-color: var(--rouge); color: var(--rouge); }
+
+    /* ── TABLE DES TÂCHES ───────────────────────────────────── */
+    .table-wrapper {
+      background: var(--blanc);
+      border-radius: 14px;
+      overflow: hidden;
+      box-shadow: 0 4px 20px var(--ombre);
+    }
+
+    .taches-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .taches-table thead tr {
+      background: linear-gradient(90deg, var(--cafe-sombre), var(--brun-sombre));
+      color: var(--creme);
+    }
+
+    .taches-table thead th {
+      padding: 1rem 1.2rem;
+      text-align: left;
+      font-size: .78rem;
+      text-transform: uppercase;
+      letter-spacing: .1em;
+      font-weight: 700;
+    }
+
+    .taches-table tbody tr {
+      border-bottom: 1px solid var(--creme-fonce);
+      transition: background .15s;
+    }
+
+    .taches-table tbody tr:hover { background: #fdf0e6; }
+    .taches-table tbody tr.terminee { opacity: .65; }
+
+    .taches-table td { padding: .9rem 1.2rem; vertical-align: middle; }
+
+    .titre-cell {
+      font-weight: 700;
+      color: var(--cafe-sombre);
+      font-size: 1rem;
+    }
+
+    .titre-cell.terminee {
+      text-decoration: line-through;
+      color: var(--texte-doux);
+    }
+
+    .desc-cell {
+      font-size: .85rem;
+      color: var(--texte-doux);
+      max-width: 280px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .date-cell { font-size: .8rem; color: var(--brun-clair); white-space: nowrap; }
+
+    /* ── BADGES ─────────────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      padding: .3rem .8rem;
+      border-radius: 20px;
+      font-size: .75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: .05em;
+    }
+
+    .badge-en-cours  { background: #fff3e0; color: #e65100; border: 1.5px solid #ffcc80; }
+    .badge-terminee  { background: #e8f5e9; color: var(--vert-sombre); border: 1.5px solid #a5d6a7; }
+    .badge-faible    { background: #f5f5f5; color: #616161; border: 1.5px solid #e0e0e0; }
+    .badge-moyenne   { background: #e3f2fd; color: #1565c0; border: 1.5px solid #90caf9; }
+    .badge-haute     { background: #ffebee; color: var(--rouge-sombre); border: 1.5px solid #ef9a9a; }
+
+    /* ── ACTION BUTTONS ─────────────────────────────────────── */
+    .actions { display: flex; gap: .5rem; align-items: center; }
+
+    .btn-action {
+      padding: .4rem .8rem;
+      border-radius: 6px;
+      font-size: .78rem;
+      font-weight: 700;
+      border: none;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all .18s;
+      display: inline-flex;
+      align-items: center;
+      gap: .3rem;
+    }
+
+    .btn-toggle-done  { background: var(--vert); color: var(--blanc); }
+    .btn-toggle-done:hover  { background: var(--vert-sombre); }
+    .btn-toggle-undo  { background: var(--brun-clair); color: var(--blanc); }
+    .btn-toggle-undo:hover  { background: var(--brun); }
+    .btn-edit   { background: var(--cafe-clair); color: var(--blanc); }
+    .btn-edit:hover   { background: var(--cafe); }
+    .btn-delete { background: #fee2e2; color: var(--rouge-sombre); border: 1px solid #fca5a5; }
+    .btn-delete:hover { background: var(--rouge); color: var(--blanc); }
+
+    /* ── EMPTY STATE ────────────────────────────────────────── */
+    .empty-state {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: var(--texte-doux);
+    }
+    .empty-icon { font-size: 4rem; margin-bottom: 1rem; opacity: .6; }
+    .empty-state h3 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.5rem;
+      margin-bottom: .5rem;
+    }
+
+    /* ── FORM STYLES ────────────────────────────────────────── */
+    .form-card {
+      background: var(--blanc);
+      border-radius: 14px;
+      padding: 2.5rem;
+      max-width: 680px;
+      margin: 0 auto;
+      box-shadow: 0 4px 24px var(--ombre);
+      border-top: 5px solid var(--rouge);
+    }
+
+    .form-group { margin-bottom: 1.5rem; }
+
+    .form-group label {
+      display: block;
+      font-weight: 700;
+      font-size: .88rem;
+      text-transform: uppercase;
+      letter-spacing: .06em;
+      color: var(--cafe);
+      margin-bottom: .5rem;
+    }
+
+    .form-input, .form-textarea, .form-select {
+      width: 100%;
+      padding: .8rem 1rem;
+      border: 2px solid var(--creme-fonce);
+      border-radius: 8px;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      color: var(--texte);
+      background: var(--creme);
+      transition: border-color .2s;
+    }
+
+    .form-input:focus, .form-textarea:focus, .form-select:focus {
+      outline: none;
+      border-color: var(--rouge);
+      background: var(--blanc);
+    }
+
+    .form-actions {
+      display: flex;
+      gap: 1rem;
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      border-top: 2px solid var(--creme-fonce);
+    }
+
+    .btn-submit {
+      flex: 1;
+      padding: .9rem;
+      background: linear-gradient(135deg, var(--rouge), var(--rouge-sombre));
+      color: var(--blanc);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      letter-spacing: .05em;
+      cursor: pointer;
+      transition: all .2s;
+    }
+    .btn-submit:hover { opacity: .9; transform: translateY(-1px); box-shadow: 0 4px 14px rgba(192,57,43,.4); }
+
+    .btn-cancel {
+      padding: .9rem 1.8rem;
+      background: var(--creme-fonce);
+      color: var(--texte-doux);
+      border: none;
+      border-radius: 8px;
+      font-family: 'Lato', sans-serif;
+      font-size: 1rem;
+      font-weight: 700;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      transition: background .2s;
+    }
+    .btn-cancel:hover { background: #e0d0c0; }
+
+    /* ── CONFIRM DELETE ─────────────────────────────────────── */
+    .confirm-card {
+      background: var(--blanc);
+      border-radius: 14px;
+      padding: 2.5rem;
+      max-width: 520px;
+      margin: 0 auto;
+      box-shadow: 0 4px 24px var(--ombre);
+      border-top: 5px solid var(--rouge);
+      text-align: center;
+    }
+
+    .confirm-icon { font-size: 3.5rem; margin-bottom: 1rem; }
+
+    .confirm-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.8rem;
+      color: var(--rouge-sombre);
+      margin-bottom: .8rem;
+    }
+
+    .confirm-card p { color: var(--texte-doux); margin-bottom: .5rem; }
+
+    /* ── FOOTER ─────────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 2rem;
+      color: var(--texte-doux);
+      font-size: .8rem;
+      margin-top: 3rem;
+      border-top: 2px solid var(--creme-fonce);
+    }
+
+    footer strong { color: var(--cafe); }
+
+    /* ── RESPONSIVE ─────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    }
+    @media (max-width: 640px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; }
+      .page-header { flex-direction: column; gap: 1rem; align-items: flex-start; }
+      .navbar-title { font-size: 1.2rem; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
+  <nav class="navbar">
+    <a href="{% url 'liste_taches' %}" class="navbar-brand">
+      <div class="navbar-logo">📋</div>
+      <span class="navbar-title">Task<span>Master</span></span>
+    </a>
+    <div class="navbar-links">
+      <a href="{% url 'liste_taches' %}" class="nav-btn nav-btn-outline">🏠 Accueil</a>
+      <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary">＋ Nouvelle tâche</a>
+    </div>
+  </nav>
+
+  <!-- ══ MESSAGES FLASH ════════════════════════════════════== -->
+  {% if messages %}
+  <div class="messages-container">
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+    {% endfor %}
+  </div>
+  {% endif %}
+
+  <!-- ══ CONTENU PRINCIPAL ════════════════════════════════════ -->
+  <main class="main-content">
+    {% block content %}{% endblock %}
+  </main>
+
+  <!-- ══ FOOTER ════════════════════════════════════════════════ -->
+  <footer>
+    <strong>TaskMaster</strong> — Application Django · Génie Logiciel L2 · SQLite + POO
+  </footer>
+
+</body>
+</html>

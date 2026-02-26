@@ -1,0 +1,154 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Tableau de Bord — TaskMaster{% endblock %}
+
+{% block content %}
+
+<!-- ══ EN-TÊTE ══════════════════════════════════════════════ -->
+<div class="page-header">
+  <h1>📋 Mes <span class="accent">Tâches</span></h1>
+  <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary" style="font-size:.95rem; padding:.65rem 1.4rem;">
+    ＋ Nouvelle tâche
+  </a>
+</div>
+
+<!-- ══ STATISTIQUES ════════════════════════════════════════= -->
+<div class="stats-grid">
+  <div class="stat-card rouge">
+    <div class="stat-number">{{ stats.total }}</div>
+    <div class="stat-label">Total tâches</div>
+  </div>
+  <div class="stat-card cafe">
+    <div class="stat-number">{{ stats.en_cours }}</div>
+    <div class="stat-label">En cours</div>
+  </div>
+  <div class="stat-card vert">
+    <div class="stat-number">{{ stats.terminees }}</div>
+    <div class="stat-label">Terminées</div>
+  </div>
+  <div class="stat-card brun">
+    <div class="stat-number">{{ stats.haute_prio }}</div>
+    <div class="stat-label">Haute priorité</div>
+  </div>
+</div>
+
+<!-- ══ FILTRES ═══════════════════════════════════════════════ -->
+<form class="filtres" method="GET">
+  <label for="statut">Statut :</label>
+  <select name="statut" id="statut">
+    <option value="">— Tous —</option>
+    <option value="en_cours"  {% if statut == 'en_cours'  %}selected{% endif %}>En cours</option>
+    <option value="terminee"  {% if statut == 'terminee'  %}selected{% endif %}>Terminée</option>
+  </select>
+
+  <label for="priorite">Priorité :</label>
+  <select name="priorite" id="priorite">
+    <option value="">— Toutes —</option>
+    <option value="faible"  {% if priorite == 'faible'  %}selected{% endif %}>Faible</option>
+    <option value="moyenne" {% if priorite == 'moyenne' %}selected{% endif %}>Moyenne</option>
+    <option value="haute"   {% if priorite == 'haute'   %}selected{% endif %}>Haute</option>
+  </select>
+
+  <button type="submit" class="btn-filtrer">🔍 Filtrer</button>
+  <a href="{% url 'liste_taches' %}" class="btn-reset">✕ Réinitialiser</a>
+</form>
+
+<!-- ══ TABLEAU DES TÂCHES ════════════════════════════════════ -->
+<div class="table-wrapper">
+  {% if taches %}
+  <table class="taches-table">
+    <thead>
+      <tr>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>Priorité</th>
+        <th>Statut</th>
+        <th>Date</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for tache in taches %}
+      <tr class="{% if tache.est_terminee %}terminee{% endif %}">
+        <!-- Titre -->
+        <td>
+          <span class="titre-cell {% if tache.est_terminee %}terminee{% endif %}">
+            {% if tache.est_haute_priorite %}🔴{% endif %}
+            {{ tache.titre }}
+          </span>
+        </td>
+
+        <!-- Description -->
+        <td>
+          <span class="desc-cell">
+            {% if tache.description %}{{ tache.description }}{% else %}<em style="opacity:.5">—</em>{% endif %}
+          </span>
+        </td>
+
+        <!-- Priorité -->
+        <td>
+          {% if tache.priorite == 'haute' %}
+            <span class="badge badge-haute">🔴 Haute</span>
+          {% elif tache.priorite == 'moyenne' %}
+            <span class="badge badge-moyenne">🔵 Moyenne</span>
+          {% else %}
+            <span class="badge badge-faible">⚪ Faible</span>
+          {% endif %}
+        </td>
+
+        <!-- Statut -->
+        <td>
+          {% if tache.est_terminee %}
+            <span class="badge badge-terminee">✅ Terminée</span>
+          {% else %}
+            <span class="badge badge-en-cours">⏳ En cours</span>
+          {% endif %}
+        </td>
+
+        <!-- Date -->
+        <td class="date-cell">{{ tache.date_creation|date:"d/m/Y H:i" }}</td>
+
+        <!-- Actions -->
+        <td>
+          <div class="actions">
+            <!-- Toggle statut -->
+            <form method="POST" action="{% url 'toggle_statut' tache.pk %}" style="display:inline;">
+              {% csrf_token %}
+              {% if tache.est_terminee %}
+                <button type="submit" class="btn-action btn-toggle-undo" title="Remettre en cours">↩ Annuler</button>
+              {% else %}
+                <button type="submit" class="btn-action btn-toggle-done" title="Marquer terminée">✓ Terminer</button>
+              {% endif %}
+            </form>
+
+            <!-- Modifier -->
+            <a href="{% url 'modifier_tache' tache.pk %}" class="btn-action btn-edit" title="Modifier">✏️</a>
+
+            <!-- Supprimer -->
+            <a href="{% url 'supprimer_tache' tache.pk %}" class="btn-action btn-delete" title="Supprimer">🗑️</a>
+          </div>
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% else %}
+  <!-- État vide -->
+  <div class="empty-state">
+    <div class="empty-icon">📭</div>
+    <h3>Aucune tâche trouvée</h3>
+    <p style="margin-bottom:1.5rem;">
+      {% if statut or priorite %}
+        Aucun résultat pour ces filtres.
+        <a href="{% url 'liste_taches' %}" style="color:var(--rouge);">Voir toutes les tâches</a>
+      {% else %}
+        Commencez par créer votre première tâche !
+      {% endif %}
+    </p>
+    <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary">＋ Créer une tâche</a>
+  </div>
+  {% endif %}
+</div>
+
+{% endblock %}

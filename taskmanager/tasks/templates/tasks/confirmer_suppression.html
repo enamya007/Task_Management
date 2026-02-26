@@ -1,0 +1,33 @@
+{% extends 'tasks/base.html' %}
+
+{% block title %}Supprimer — TaskMaster{% endblock %}
+
+{% block content %}
+
+<div class="page-header">
+  <h1>🗑️ <span class="accent">Supprimer</span> une tâche</h1>
+</div>
+
+<div class="confirm-card">
+  <div class="confirm-icon">⚠️</div>
+  <h2>Êtes-vous sûr ?</h2>
+  <p>Vous êtes sur le point de supprimer définitivement la tâche :</p>
+  <p style="margin:1rem 0; padding:.8rem 1.2rem; background:var(--creme-fonce); border-radius:8px; font-weight:700; color:var(--cafe-sombre); font-size:1.1rem;">
+    « {{ tache.titre }} »
+  </p>
+  <p style="color:var(--rouge); font-size:.88rem;">⚠️ Cette action est irréversible.</p>
+
+  <div style="display:flex; gap:1rem; justify-content:center; margin-top:2rem;">
+    <a href="{% url 'liste_taches' %}" class="btn-cancel" style="border:2px solid var(--creme-fonce); border-radius:8px; padding:.9rem 1.8rem;">
+      ← Annuler
+    </a>
+    <form method="POST">
+      {% csrf_token %}
+      <button type="submit" class="btn-action btn-delete" style="padding:.9rem 1.8rem; font-size:.95rem; border-radius:8px;">
+        🗑️ Oui, supprimer
+      </button>
+    </form>
+  </div>
+</div>
+
+{% endblock %}
