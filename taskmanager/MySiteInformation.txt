@@ -1,2 +1,0 @@
-Identification du service : 'srv-d6gma2ogjchc73c8ngd0'
-url : 'https://task-management-t9w4.onrender.com'
