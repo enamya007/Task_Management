@@ -3,12 +3,12 @@ settings.py — Configuration Django pour TaskMaster
 """
 from pathlib import Path
 from django.contrib.messages import constants as msg_constants
-
+import os
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 SECRET_KEY = 'django-insecure-taskmaster-l2-genie-logiciel-change-en-prod'
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -64,6 +64,9 @@ USE_I18N = True
 USE_TZ = True
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+
+STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
@@ -81,3 +84,4 @@ MESSAGE_TAGS = {
 LOGIN_URL = '/connexion/'
 LOGIN_REDIRECT_URL = '/'
 #LOGOUT_REDIRECT_URL = '/connexion/'
+ALLOWED_HOSTS = ['.onrender.com', 'localhost', '127.0.0.1']
