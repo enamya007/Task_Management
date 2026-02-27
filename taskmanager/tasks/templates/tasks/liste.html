@@ -6,7 +6,7 @@
 
 <!-- ══ EN-TÊTE ══════════════════════════════════════════════ -->
 <div class="page-header">
-  <h1>📋 Mes <span class="accent">Tâches</span></h1>
+  <h1> Mes <span class="accent">Tâches</span></h1>
   <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary" style="font-size:.95rem; padding:.65rem 1.4rem;">
     ＋ Nouvelle tâche
   </a>
@@ -49,7 +49,7 @@
     <option value="haute"   {% if priorite == 'haute'   %}selected{% endif %}>Haute</option>
   </select>
 
-  <button type="submit" class="btn-filtrer">🔍 Filtrer</button>
+  <button type="submit" class="btn-filtrer"> Filtrer</button>
   <a href="{% url 'liste_taches' %}" class="btn-reset">✕ Réinitialiser</a>
 </form>
 
@@ -99,9 +99,9 @@
         <!-- Statut -->
         <td>
           {% if tache.est_terminee %}
-            <span class="badge badge-terminee">✅ Terminée</span>
+            <span class="badge badge-terminee"> Terminée</span>
           {% else %}
-            <span class="badge badge-en-cours">⏳ En cours</span>
+            <span class="badge badge-en-cours"> En cours</span>
           {% endif %}
         </td>
 
@@ -125,7 +125,7 @@
             <a href="{% url 'modifier_tache' tache.pk %}" class="btn-action btn-edit" title="Modifier">✏️</a>
 
             <!-- Supprimer -->
-            <a href="{% url 'supprimer_tache' tache.pk %}" class="btn-action btn-delete" title="Supprimer">🗑️</a>
+            <a href="{% url 'supprimer_tache' tache.pk %}" class="btn-action btn-delete" title="Supprimer">❌</a>
           </div>
         </td>
       </tr>
@@ -136,7 +136,7 @@
   {% else %}
   <!-- État vide -->
   <div class="empty-state">
-    <div class="empty-icon">📭</div>
+    <div class="empty-icon"></div>
     <h3>Aucune tâche trouvée</h3>
     <p style="margin-bottom:1.5rem;">
       {% if statut or priorite %}
@@ -146,7 +146,7 @@
         Commencez par créer votre première tâche !
       {% endif %}
     </p>
-    <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary">＋ Créer une tâche</a>
+    <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary"> Créer une tâche</a>
   </div>
   {% endif %}
 </div>

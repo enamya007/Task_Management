@@ -77,3 +77,7 @@ MESSAGE_TAGS = {
     msg_constants.WARNING: 'warning',
     msg_constants.ERROR:   'error',
 }
+
+LOGIN_URL = '/connexion/'
+LOGIN_REDIRECT_URL = '/'
+#LOGOUT_REDIRECT_URL = '/connexion/'

@@ -1,5 +1,6 @@
 from django.db import models
 from django.utils import timezone
+from django.contrib.auth.models import User 
 
 
 class Tache(models.Model):
@@ -42,6 +43,14 @@ class Tache(models.Model):
         choices=PRIORITE_CHOICES,
         default=PRIORITE_MOYENNE,
         verbose_name="Priorité"
+    )
+    
+    utilisateur = models.ForeignKey(
+        User,
+        on_delete=models.CASCADE,
+        related_name='taches',
+        null=True,
+        blank=True,
     )
 
     # ── Méta ──────────────────────────────────────────────────────────────────

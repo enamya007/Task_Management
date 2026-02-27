@@ -507,12 +507,19 @@
   <!-- ══ NAVBAR ══════════════════════════════════════════════ -->
   <nav class="navbar">
     <a href="{% url 'liste_taches' %}" class="navbar-brand">
-      <div class="navbar-logo">📋</div>
+      <div class="navbar-logo"></div>
       <span class="navbar-title">Task<span>Master</span></span>
     </a>
     <div class="navbar-links">
-      <a href="{% url 'liste_taches' %}" class="nav-btn nav-btn-outline">🏠 Accueil</a>
-      <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary">＋ Nouvelle tâche</a>
+      {% if user.is_authenticated %}
+        <span style="color:var(--creme-fonce);font-size:.85rem;"> {{ user.username }}</span>
+        <a href="{% url 'liste_taches' %}" class="nav-btn nav-btn-outline"> Mes tâches</a>
+        <a href="{% url 'ajouter_tache' %}" class="nav-btn nav-btn-primary"> Nouvelle tâche</a>
+        <a href="{% url 'deconnexion' %}" class="nav-btn" style="background:var(--rouge-sombre);color:var(--creme);">⏻ Déconnexion</a>
+      {% else %}
+        <a href="{% url 'connexion' %}" class="nav-btn nav-btn-outline"> Connexion</a>
+        <a href="{% url 'inscription' %}" class="nav-btn nav-btn-primary"> S'inscrire</a>
+      {% endif %}
     </div>
   </nav>
 

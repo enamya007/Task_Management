@@ -7,9 +7,9 @@
 <div class="page-header">
   <h1>
     {% if action == 'Ajouter' %}
-      ➕ <span class="accent">Nouvelle</span> tâche
+       <span class="accent">Nouvelle</span> tâche
     {% else %}
-      ✏️ <span class="accent">Modifier</span> la tâche
+       <span class="accent">Modifier</span> la tâche
     {% endif %}
   </h1>
 </div>
@@ -17,7 +17,7 @@
 <div class="form-card">
   {% if action == 'Modifier' and tache %}
   <div style="background:var(--creme-fonce); border-radius:8px; padding:.8rem 1rem; margin-bottom:1.8rem; font-size:.85rem; color:var(--texte-doux);">
-    📅 Créée le <strong>{{ tache.date_creation|date:"d/m/Y à H:i" }}</strong>
+     Créée le <strong>{{ tache.date_creation|date:"d/m/Y à H:i" }}</strong>
   </div>
   {% endif %}
 
@@ -26,7 +26,7 @@
 
     <!-- Titre -->
     <div class="form-group">
-      <label for="{{ form.titre.id_for_label }}">📌 Titre *</label>
+      <label for="{{ form.titre.id_for_label }}"> Titre *</label>
       {{ form.titre }}
       {% if form.titre.errors %}
         <p style="color:var(--rouge);font-size:.82rem;margin-top:.3rem;">{{ form.titre.errors.0 }}</p>
@@ -35,18 +35,18 @@
 
     <!-- Description -->
     <div class="form-group">
-      <label for="{{ form.description.id_for_label }}">📝 Description</label>
+      <label for="{{ form.description.id_for_label }}"> Description</label>
       {{ form.description }}
     </div>
 
     <!-- Priorité & Statut côte à côte -->
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
       <div class="form-group">
-        <label for="{{ form.priorite.id_for_label }}">⚡ Priorité</label>
+        <label for="{{ form.priorite.id_for_label }}"> Priorité</label>
         {{ form.priorite }}
       </div>
       <div class="form-group">
-        <label for="{{ form.statut.id_for_label }}">🔖 Statut</label>
+        <label for="{{ form.statut.id_for_label }}"> Statut</label>
         {{ form.statut }}
       </div>
     </div>
@@ -55,7 +55,7 @@
     <div class="form-actions">
       <a href="{% url 'liste_taches' %}" class="btn-cancel">← Annuler</a>
       <button type="submit" class="btn-submit">
-        {% if action == 'Ajouter' %}✅ Créer la tâche{% else %}💾 Enregistrer{% endif %}
+        {% if action == 'Ajouter' %} Créer la tâche{% else %} Enregistrer{% endif %}
       </button>
     </div>
   </form>

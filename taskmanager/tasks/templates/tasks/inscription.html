@@ -1,0 +1,36 @@
+{% extends 'tasks/base.html' %}
+{% block title %}Créer un compte — TaskMaster{% endblock %}
+{% block content %}
+
+<div class="page-header">
+  <h1> Créer un <span class="accent">compte</span></h1>
+</div>
+
+<div class="form-card">
+  <form method="POST">
+    {% csrf_token %}
+    {% for field in form %}
+    <div class="form-group">
+      <label>{{ field.label }}</label>
+      {{ field }}
+      {% if field.errors %}
+        <p style="color:var(--rouge);font-size:.82rem;margin-top:.3rem;">{{ field.errors.0 }}</p>
+      {% endif %}
+      {% if field.help_text %}
+        <p style="color:var(--texte-doux);font-size:.78rem;margin-top:.25rem;">{{ field.help_text }}</p>
+      {% endif %}
+    </div>
+    {% endfor %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn-submit"> Créer mon compte</button>
+    </div>
+  </form>
+
+  <p style="text-align:center;margin-top:1.5rem;color:var(--texte-doux);">
+    Déjà un compte ?
+    <a href="{% url 'connexion' %}" style="color:var(--rouge);font-weight:700;">Se connecter</a>
+  </p>
+</div>
+
+{% endblock %}
